@@ -269,7 +269,12 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                   adapter=new SeckillRecyclerViewAdapter(mContext,seckill_info.getList());
                   recyclerView.setAdapter(adapter);
               recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-
+                 adapter.setOnSeckillRecyclerView(new SeckillRecyclerViewAdapter.OnSeckillRecyclerView() {
+                     @Override
+                     public void onItemClick(int position) {
+                           Toast.makeText(mContext,"秒杀="+position,Toast.LENGTH_SHORT).show();
+                     }
+                 });
           }
       }
 }
