@@ -1,6 +1,9 @@
 package com.example.hongaer.shoppingmall2.home.adapter;
 
 import android.content.Context;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +22,7 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnLoadImageListener;
+import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +84,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
             return new ChannelViewHolder(mContext, mLayoutInflater.inflate(R.layout.channel_item, null));
 
+        }else if(viewType==ACT){
+            return new ActViewHolder(mContext, mLayoutInflater.inflate(R.layout.act_item, null));
+
+        }else if(viewType==SECKILL){
+            return new SeckillViewHolde(mContext, mLayoutInflater.inflate(R.layout.seckill_item, null));
         }
         return null;
     }
@@ -88,11 +98,18 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         if (getItemViewType(position) == BANNER) {
             BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
             bannerViewHolder.setData(resultbean.getBanner_info());
+
         }else if(getItemViewType(position) == CHANNEL){
              ChannelViewHolder channelViewHolder= (ChannelViewHolder) holder;
              channelViewHolder.setData(resultbean.getChannel_info());
-            
-            
+
+        }else if (getItemViewType(position)==ACT){
+           ActViewHolder actViewHolder= (ActViewHolder) holder;
+           actViewHolder.setData(resultbean.getAct_info());
+        } else if(getItemViewType(position)==SECKILL){
+            SeckillViewHolde seckillViewHolde= (SeckillViewHolde) holder;
+            seckillViewHolde.setData(resultbean.getSeckill_info());
+
         }
 
 
@@ -126,7 +143,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 4;
     }
 
     class BannerViewHolder extends RecyclerView.ViewHolder {
@@ -180,6 +197,79 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
               // 得到数据，设置适配器
                         adapter=new ChannelAdapter(mContext,channel_info);
                         gvChannel.setAdapter(adapter);
+          }
+
+      }
+    class ActViewHolder extends RecyclerView.ViewHolder{
+               private Context mContext;
+               private ViewPager actViewPager;
+
+        public ActViewHolder(Context mContext, View itemView) {
+            super(itemView);
+             this.mContext=mContext;
+              actViewPager= (ViewPager) itemView.findViewById(R.id.act_viewpager);
+        }
+
+
+        public void setData(final List<ResultDataBean.ResultBean.ActInfoBean> act_info) {
+               actViewPager.setPageMargin(20);
+               actViewPager.setOffscreenPageLimit(3);
+               actViewPager.setPageTransformer(true,new ScaleInTransformer());
+               actViewPager.setAdapter(new PagerAdapter() {
+                   @Override
+                   public Object instantiateItem(ViewGroup container, final int position) {
+                       ImageView view = new ImageView(mContext);
+                       view.setScaleType(ImageView.ScaleType.FIT_XY);
+                       Glide.with(mContext).load(Constans.BASE_URL_IMAGES + act_info.get(position).getIcon_url()).into(view);
+                       view.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               Toast.makeText(mContext,"position"+position,Toast.LENGTH_SHORT).show();
+                           }
+                       });
+                       container.addView(view);
+
+                       return view;
+                   }
+
+                   @Override
+                   public void destroyItem(ViewGroup container, int position, Object object) {
+                       container.removeView((View) object);
+                   }
+
+                   @Override
+                   public int getCount() {
+                       return act_info.size();
+                   }
+
+                   @Override
+                   public boolean isViewFromObject(View view, Object object) {
+                       return view==object;
+                   }
+               });
+        }
+    }
+      class SeckillViewHolde extends RecyclerView.ViewHolder{
+          private TextView tvMore;
+          private TextView tvTime;
+          private RecyclerView recyclerView;
+          public Context mContext;
+          private SeckillRecyclerViewAdapter adapter;
+
+          public SeckillViewHolde(Context mContext, View itemView) {
+              super(itemView);
+              tvTime = (TextView) itemView.findViewById(R.id.tv_time_seckill);
+              tvMore = (TextView) itemView.findViewById(R.id.tv_more_seckill);
+              recyclerView = (RecyclerView) itemView.findViewById(R.id.rv_seckill);
+              this.mContext = mContext;
+          }
+
+          public void setData(ResultDataBean.ResultBean.SeckillInfoBean seckill_info) {
+              //得到数据，设置数据，设置适配器
+                  adapter=new SeckillRecyclerViewAdapter(mContext,seckill_info.getList());
+                  recyclerView.setAdapter(adapter);
+              recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+
           }
       }
 }
