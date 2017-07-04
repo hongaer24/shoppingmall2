@@ -57,6 +57,22 @@ public class SeckillRecyclerViewAdapter extends RecyclerView.Adapter<SeckillRecy
               ivFigure = (ImageView) itemView.findViewById(R.id.iv_figure);
               tvCoverPrice = (TextView) itemView.findViewById(R.id.tv_cover_price);
               tvOriginPrice = (TextView) itemView.findViewById(R.id.tv_origin_price);
+              itemView.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                        if(onSeckillRecyclerView !=null){
+                             onSeckillRecyclerView.onItemClick(getLayoutPosition());
+                        }
+                  }
+              });
           }
       }
+      public  interface OnSeckillRecyclerView{
+          public void onItemClick(int position);
+          }
+       private OnSeckillRecyclerView onSeckillRecyclerView;
+       public void setOnSeckillRecyclerView(OnSeckillRecyclerView onSeckillRecyclerView){
+              this.onSeckillRecyclerView=onSeckillRecyclerView;
+       }
+
 }
