@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.hongaer.shoppingmall2.R;
@@ -58,8 +61,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
      */
 
     /**
- *  当前类型
- */
+     * 当前类型
+     */
     public int currentType = BANNER;
 
     public HomeFragmentAdapter(Context mContext, ResultDataBean.ResultBean resultbean) {
@@ -71,17 +74,26 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == BANNER) {
-            return new BannerViewHolder(mContext,mLayoutInflater.inflate(R.layout.banner_viewpager, null));
+            return new BannerViewHolder(mContext, mLayoutInflater.inflate(R.layout.banner_viewpager, null));
+        } else if (viewType == CHANNEL) {
+
+            return new ChannelViewHolder(mContext, mLayoutInflater.inflate(R.layout.channel_item, null));
+
         }
-         return  null;
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                   if(getItemViewType(position)==BANNER){
-                       BannerViewHolder bannerViewHolder= (BannerViewHolder) holder;
-                       bannerViewHolder.setData(resultbean.getBanner_info());
-                   }
+        if (getItemViewType(position) == BANNER) {
+            BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
+            bannerViewHolder.setData(resultbean.getBanner_info());
+        }else if(getItemViewType(position) == CHANNEL){
+             ChannelViewHolder channelViewHolder= (ChannelViewHolder) holder;
+             channelViewHolder.setData(resultbean.getChannel_info());
+            
+            
+        }
 
 
     }
@@ -114,34 +126,61 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
-    class BannerViewHolder extends RecyclerView.ViewHolder{
 
-            private Context mContext;
-            private Banner banner;
-        public BannerViewHolder(Context mContext,View itemView ) {
+    class BannerViewHolder extends RecyclerView.ViewHolder {
+
+        private Context mContext;
+        private Banner banner;
+
+        public BannerViewHolder(Context mContext, View itemView) {
             super(itemView);
-            this.mContext=mContext;
-            this.banner= (Banner) itemView.findViewById(R.id.banner);
+            this.mContext = mContext;
+            this.banner = (Banner) itemView.findViewById(R.id.banner);
         }
 
         public void setData(List<ResultDataBean.ResultBean.BannerInfoBean> banner_info) {
-                       List<String> imagesUrl=new ArrayList<>();
-                        for(int i=0;i<banner_info.size();i++){
-                            String imageUrl=banner_info.get(i).getImage();
-                            imagesUrl.add(imageUrl);
-                        }
-                        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE);
-                        banner.setBannerAnimation(Transformer.Accordion);
-                        banner.setImages(imagesUrl, new OnLoadImageListener() {
-                            @Override
-                            public void OnLoadImage(ImageView view, Object url) {
+            List<String> imagesUrl = new ArrayList<>();
+            for (int i = 0; i < banner_info.size(); i++) {
+                String imageUrl = banner_info.get(i).getImage();
+                imagesUrl.add(imageUrl);
+            }
+            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE);
+            banner.setBannerAnimation(Transformer.Accordion);
+            banner.setImages(imagesUrl, new OnLoadImageListener() {
+                @Override
+                public void OnLoadImage(ImageView view, Object url) {
 
-                                Glide.with(mContext).load(Constans.BASE_URL_IMAGES+url).into(view);
-                            }
-                        });
+                    Glide.with(mContext).load(Constans.BASE_URL_IMAGES + url).into(view);
+                }
+            });
 
         }
     }
+      class ChannelViewHolder extends RecyclerView.ViewHolder {
+
+          private Context mContext;
+          private GridView gvChannel;
+          private ChannelAdapter adapter;
+
+          public ChannelViewHolder(final Context mContext, View itemView) {
+              super(itemView);
+              this.mContext=mContext;
+              gvChannel= (GridView) itemView.findViewById(R.id.gv_channel);
+              gvChannel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                  @Override
+                  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                      Toast.makeText(mContext,"position"+position,Toast.LENGTH_SHORT).show();
+                  }
+              });
+          }
+
+          public void setData(List<ResultDataBean.ResultBean.ChannelInfoBean> channel_info) {
+              // 得到数据，设置适配器
+                        adapter=new ChannelAdapter(mContext,channel_info);
+                        gvChannel.setAdapter(adapter);
+          }
+      }
 }
+
