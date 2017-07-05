@@ -74,11 +74,26 @@ public class HomeFragment extends BaseFragment {
     private void processData(String json) {
         ResultDataBean resultdatabean = JSON.parseObject(json, ResultDataBean.class);
         resultbean = resultdatabean.getResult();
-             //Log.e(TAG,"解析成功===="+ resultbean.getBanner_info().get(1).getImage();
-         if(resultbean!=null){
-                adapter=new HomeFragmentAdapter(mContext,resultbean);
-                rvHome.setAdapter(adapter);
-                rvHome.setLayoutManager(new GridLayoutManager(mContext,1));
+        //Log.e(TAG,"解析成功===="+ resultbean.getBanner_info().get(1).getImage();
+        if (resultbean != null) {
+            adapter = new HomeFragmentAdapter(mContext, resultbean);
+            rvHome.setAdapter(adapter);
+            GridLayoutManager manager = new GridLayoutManager(getActivity(), 1);
+                 //设置滑动到哪个位置了的监听
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (position <= 3) {
+                        ib_top.setVisibility(View.GONE);
+                    } else {
+                        ib_top.setVisibility(View.VISIBLE);
+                    }
+                    //只能返回 1
+                    return 1;
+                }
+            });
+                      //设置网格布局
+            rvHome.setLayoutManager(manager);
          }
 
          else{}
