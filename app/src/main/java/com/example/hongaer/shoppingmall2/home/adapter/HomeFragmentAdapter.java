@@ -1,6 +1,8 @@
 package com.example.hongaer.shoppingmall2.home.adapter;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +26,9 @@ import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnLoadImageListener;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -89,6 +93,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
         }else if(viewType==SECKILL){
             return new SeckillViewHolde(mContext, mLayoutInflater.inflate(R.layout.seckill_item, null));
+
+        }else if (viewType==RECOMMEND){
+            return new RecommendViewHolder(mContext, mLayoutInflater.inflate(R.layout.recommend_item, null));
+        }else if(viewType==HOT){
+            return new HotViewHolder(mContext, mLayoutInflater.inflate(R.layout.hot_item, null));
         }
         return null;
     }
@@ -110,6 +119,12 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             SeckillViewHolde seckillViewHolde= (SeckillViewHolde) holder;
             seckillViewHolde.setData(resultbean.getSeckill_info());
 
+        }else  if (getItemViewType(position)==RECOMMEND){
+            RecommendViewHolder recommendViewHolder= (RecommendViewHolder) holder;
+           recommendViewHolder.setData(resultbean.getRecommend_info());
+        }else if (getItemViewType(position)==HOT){
+            HotViewHolder  hotViewHolder= (HotViewHolder) holder;
+            hotViewHolder.setData(resultbean.getHot_info());
         }
 
 
@@ -143,7 +158,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 6;
     }
 
     class BannerViewHolder extends RecyclerView.ViewHolder {
@@ -249,6 +264,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                });
         }
     }
+       private long dt=0;
       class SeckillViewHolde extends RecyclerView.ViewHolder{
           private TextView tvMore;
           private TextView tvTime;
@@ -256,6 +272,22 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
           public Context mContext;
           private SeckillRecyclerViewAdapter adapter;
 
+          private Handler handler=new Handler(){
+              @Override
+              public void handleMessage(Message msg) {
+                  super.handleMessage(msg);
+                  dt=dt-1000;
+                  SimpleDateFormat formatter=new SimpleDateFormat("hh:mm:ss");
+                  String time=formatter.format(new Date(dt));
+                  tvTime.setText(time);
+
+                  handler.removeMessages(0);
+                  handler.sendEmptyMessageDelayed(0,1000);
+                  if(dt<=0){
+                      handler.removeCallbacksAndMessages(null);
+                  }
+              }
+          };
           public SeckillViewHolde(Context mContext, View itemView) {
               super(itemView);
               tvTime = (TextView) itemView.findViewById(R.id.tv_time_seckill);
@@ -275,7 +307,62 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                            Toast.makeText(mContext,"秒杀="+position,Toast.LENGTH_SHORT).show();
                      }
                  });
+                 dt=Integer.valueOf(seckill_info.getEnd_time())-Integer.valueOf(seckill_info.getStart_time());
+
+                handler.sendEmptyMessageDelayed(0,1000);
           }
       }
+      class RecommendViewHolder extends RecyclerView.ViewHolder{
+          private Context mContext;
+          private TextView tv_more_recommend;
+          private GridView gv_recommend;
+          private RecommendGridViewAdapter adapter;
+
+          public RecommendViewHolder(final Context mContext, View itemView) {
+              super(itemView);
+              this.mContext=mContext;
+              tv_more_recommend= (TextView) itemView.findViewById(R.id.tv_more_recommend);
+              gv_recommend= (GridView) itemView.findViewById(R.id.gv_recommend);
+              gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                  @Override
+                  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                      Toast.makeText(mContext,"推荐=="+position,Toast.LENGTH_SHORT).show();
+                  }
+              });
+          }
+
+          public void setData(List<ResultDataBean.ResultBean.RecommendInfoBean> recommend_info) {
+              //得到数据，设置适配器
+                adapter=new RecommendGridViewAdapter(mContext,recommend_info);
+                 gv_recommend.setAdapter(adapter);
+
+          }
+      }
+        class HotViewHolder extends RecyclerView.ViewHolder{
+                private Context mContext;
+                TextView tv_more_hot;
+                GridView gv_hot;
+            private HotGridViewAdapter adapter;
+
+
+            public HotViewHolder(final Context mContext, View itemView) {
+                super(itemView);
+                this.mContext=mContext;
+                tv_more_hot= (TextView) itemView.findViewById(R.id.tv_more_hot);
+                gv_hot= (GridView) itemView.findViewById(R.id.gv_hot);
+                gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                         Toast.makeText(mContext,"热卖=="+position,Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+
+            public void setData(List<ResultDataBean.ResultBean.HotInfoBean> hot_info) {
+                              adapter=new HotGridViewAdapter(mContext,hot_info);
+                              gv_hot.setAdapter(adapter);
+            }
+        }
 }
 
