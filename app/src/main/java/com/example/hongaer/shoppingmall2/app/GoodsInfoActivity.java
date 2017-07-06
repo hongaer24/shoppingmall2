@@ -3,7 +3,9 @@ package com.example.hongaer.shoppingmall2.app;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -11,7 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.hongaer.shoppingmall2.R;
+import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
+import com.example.hongaer.shoppingmall2.utils.Constans;
 
 public class GoodsInfoActivity extends Activity implements View.OnClickListener {
 
@@ -33,6 +38,7 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
     private TextView tvMoreHome;
     private LinearLayout ll_root;
     private Button btn_more;
+    private GoodsBean goodsBean;
     // private CartProvider cartProvider;
 
 
@@ -96,6 +102,45 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
             setContentView(R.layout.activity_goods_info);
             findViews();
 
+            //接收数据
+                 goodsBean= (GoodsBean) getIntent().getSerializableExtra("goodsBean");
+                 if(goodsBean!=null){
+                   //  Toast.makeText(this,"goodsBean=="+goodsBean.toString(),Toast.LENGTH_SHORT).show();
+                     setDataForView(goodsBean);
+                 }
+
+
         }
+    /**
+     *  设置数据
+    */
+
+    private void setDataForView(GoodsBean goodsBean) {
+        Glide.with(this).load(Constans.BASE_URL_IMAGES+goodsBean.getFigure()).into( ivGoodInfoImage);
+        tvGoodInfoName.setText(goodsBean.getName());
+        tvGoodInfoPrice.setText("¥"+goodsBean.getCover_price());
+        setWebViewData(goodsBean.getProduct_id());
+
+    }
+
+    private void setWebViewData(String product_id) {
+          if(product_id!=null){
+              wbGoodInfoMore.loadUrl("http://www.atguigu.com");
+              WebSettings webSettings =  wbGoodInfoMore.getSettings();
+              webSettings.setUseWideViewPort(true);//双击可变大小
+              webSettings.setJavaScriptEnabled(true);
+
+              webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);// 优先使用缓存
+              wbGoodInfoMore.setWebViewClient(new WebViewClient() {
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                   //返回值是 true 的时候控制去 WebView 打开，为 false 调用系统浏览器或第三方浏览器
+            view.loadUrl(url);
+            return true;
+        }
+});
+
+
+          }
+    }
 
 }
