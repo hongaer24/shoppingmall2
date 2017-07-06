@@ -1,6 +1,7 @@
 package com.example.hongaer.shoppingmall2.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
@@ -18,11 +19,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.hongaer.shoppingmall2.R;
+import com.example.hongaer.shoppingmall2.app.GoodsInfoActivity;
 import com.example.hongaer.shoppingmall2.home.bean.ResultDataBean;
 import com.example.hongaer.shoppingmall2.utils.Constans;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerClickListener;
 import com.youth.banner.listener.OnLoadImageListener;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
@@ -187,10 +190,23 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                     Glide.with(mContext).load(Constans.BASE_URL_IMAGES + url).into(view);
                 }
             });
+             banner.setOnBannerClickListener(new OnBannerClickListener() {
+                 @Override
+                 public void OnBannerClick(int position) {
+                     Toast.makeText(mContext,"position=="+position,Toast.LENGTH_SHORT).show();
+                       startGoodsInfoActivity();
+                 }
+             });
 
         }
     }
-      class ChannelViewHolder extends RecyclerView.ViewHolder {
+         //跳转商品详情页面
+    private void startGoodsInfoActivity() {
+        Intent intent=new Intent(mContext, GoodsInfoActivity.class);
+         mContext.startActivity(intent);
+    }
+
+    class ChannelViewHolder extends RecyclerView.ViewHolder {
 
           private Context mContext;
           private GridView gvChannel;
@@ -305,6 +321,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                      @Override
                      public void onItemClick(int position) {
                            Toast.makeText(mContext,"秒杀="+position,Toast.LENGTH_SHORT).show();
+                            startGoodsInfoActivity();
                      }
                  });
                  dt=Integer.valueOf(seckill_info.getEnd_time())-Integer.valueOf(seckill_info.getStart_time());
@@ -327,6 +344,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                   @Override
                   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                       Toast.makeText(mContext,"推荐=="+position,Toast.LENGTH_SHORT).show();
+                      startGoodsInfoActivity();
                   }
               });
           }
@@ -354,6 +372,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                          Toast.makeText(mContext,"热卖=="+position,Toast.LENGTH_SHORT).show();
+                        startGoodsInfoActivity();
                     }
                 });
             }
