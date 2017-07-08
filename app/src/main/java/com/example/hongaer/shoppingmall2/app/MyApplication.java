@@ -1,6 +1,7 @@
 package com.example.hongaer.shoppingmall2.app;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -13,9 +14,16 @@ import okhttp3.OkHttpClient;
  */
 
 public class MyApplication extends Application {
+    public static Context mContex;
+
+    public static Context getContex() {
+        return mContex;
+    }
+
     public void onCreate()
     {
         super.onCreate();
+          this.mContex=this;
         /*
            初始化okhttputils
         */
