@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
+import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
+import com.example.hongaer.shoppingmall2.shoppingcart.utils.CartStorage;
+
+import java.util.List;
 
 /**
  * Created by hongaer on 2017/7/1.
@@ -27,5 +31,10 @@ public class ShoppingCartFragment extends BaseFragment{
         super.initData();
         Log.e("tag","主页数据被初始化了");
         textView.setText("购物车");
+
+        List<GoodsBean> goodsBeanList= CartStorage.getInstance().getAllData();
+              for(int i=0;i<goodsBeanList.size();i++){
+                  Log.i("666687878",goodsBeanList.get(i).toString());
+              }
     }
 }
