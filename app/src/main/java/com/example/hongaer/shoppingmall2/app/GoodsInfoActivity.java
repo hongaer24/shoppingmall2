@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
+import com.example.hongaer.shoppingmall2.shoppingcart.utils.CartStorage;
 import com.example.hongaer.shoppingmall2.utils.Constans;
 
 public class GoodsInfoActivity extends Activity implements View.OnClickListener {
@@ -39,7 +40,9 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
     private LinearLayout ll_root;
     private Button btn_more;
     private GoodsBean goodsBean;
+   // private List<GoodsBean> goodsBean;
     // private CartProvider cartProvider;
+    //private  CartStorage instance;
 
 
     private void findViews() {
@@ -80,7 +83,9 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
         } else if (v == ibGoodInfoMore) {
             Toast.makeText(GoodsInfoActivity.this, "更多", Toast.LENGTH_SHORT).show();
         } else if (v == btnGoodInfoAddcart) {
-            Toast.makeText(GoodsInfoActivity.this, "添加购物车", Toast.LENGTH_SHORT).show();
+
+           CartStorage.getInstance().addData(goodsBean);
+            Toast.makeText(GoodsInfoActivity.this, "添加购物车成功了", Toast.LENGTH_SHORT).show();
         } else if (v == tvGoodInfoCallcenter) {
             Toast.makeText(GoodsInfoActivity.this, "联系客服", Toast.LENGTH_SHORT).show();
         } else if (v == tvGoodInfoCollection) {
@@ -101,6 +106,7 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_goods_info);
             findViews();
+
 
             //接收数据
                  goodsBean= (GoodsBean) getIntent().getSerializableExtra("goodsBean");
@@ -133,7 +139,7 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
               webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);// 优先使用缓存
               wbGoodInfoMore.setWebViewClient(new WebViewClient() {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                   //返回值是 true 的时候控制去 WebView 打开，为 false 调用系统浏览器或第三方浏览器
+                 //返回值是 true 的时候控制去 WebView 打开，为 false 调用系统浏览器或第三方浏览器
             view.loadUrl(url);
             return true;
         }
