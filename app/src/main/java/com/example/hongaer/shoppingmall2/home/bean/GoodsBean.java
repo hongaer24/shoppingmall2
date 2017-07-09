@@ -11,6 +11,42 @@ public class GoodsBean implements Serializable {
     private String cover_price;
     private String figure;
     private String product_id;
+    private int number=1;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    private boolean isSelected =true;
+
+    @Override
+    public String toString() {
+        return "GoodsBean{" +
+                "name='" + name + '\'' +
+                ", cover_price='" + cover_price + '\'' +
+                ", figure='" + figure + '\'' +
+                ", product_id='" + product_id + '\'' +
+                ", number=" + number +
+                ", isSelected=" + isSelected +
+                '}';
+    }
+
+
+
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+
 
     public String getName() {
         return name;
@@ -44,13 +80,6 @@ public class GoodsBean implements Serializable {
         this.product_id = product_id;
     }
 
-    @Override
-    public String toString() {
-        return "GoodsBean{" +
-                "name='" + name + '\'' +
-                ", cover_price='" + cover_price + '\'' +
-                ", figure='" + figure + '\'' +
-                ", product_id='" + product_id + '\'' +
-                '}';
-    }
+
+
 }
