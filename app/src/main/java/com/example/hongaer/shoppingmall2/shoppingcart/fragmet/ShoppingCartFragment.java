@@ -88,7 +88,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
           if(goodsBeanList!=null&&goodsBeanList.size()>0){
                //有数据隐藏
                ll_empty_shopcart.setVisibility(View.GONE);
-                adapter=new ShoppingCartAdapter(mContext,goodsBeanList);
+                adapter=new ShoppingCartAdapter(mContext,goodsBeanList,tvShopcartTotal, checkboxAll);
                 recyclerview.setAdapter(adapter);
                  recyclerview.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
 
