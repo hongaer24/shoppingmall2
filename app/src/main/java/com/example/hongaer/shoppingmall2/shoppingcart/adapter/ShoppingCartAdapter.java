@@ -27,13 +27,15 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter< ShoppingCartAdapt
     private final List<GoodsBean> datas;
     private final TextView tvShopcartTotal;
     private final CheckBox checkboxAll;
+    private final CheckBox cbAll; //完成状态下删除的全选
 
 
-    public ShoppingCartAdapter(Context mContext, List<GoodsBean> goodsBeanList, TextView tvShopcartTotal, CheckBox checkboxAll) {
+    public ShoppingCartAdapter(Context mContext, List<GoodsBean> goodsBeanList, TextView tvShopcartTotal, CheckBox checkboxAll, CheckBox cbAll) {
         this.mContext = mContext;
         this.datas = goodsBeanList;
         this.tvShopcartTotal=tvShopcartTotal;
         this.checkboxAll=checkboxAll;
+        this.cbAll=cbAll;
         showTotalPrice();
         // 设置点击事件
         setListener();
@@ -127,21 +129,31 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter< ShoppingCartAdapt
                       showTotalPrice();
                }
            });
-
-    }
-
-    private void checkAll_no(boolean isCheck) {
-        if(datas!=null&&datas.size()>0){
-            for(int i=0;i<datas.size();i++){
-                GoodsBean goodsBean=datas.get(i);
-                 goodsBean.setSelected(isCheck);
-                notifyItemChanged(i);
+          cbAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //1.得到状态
+                boolean isCheck=cbAll.isChecked();
+                //2.根据状态设置全选非全选
+                checkAll_no(isCheck);
 
             }
-        }
+        });
+
     }
 
-    private void checkAll() {
+    public void checkAll_no(boolean isCheck) {
+            if(datas!=null&&datas.size()>0){
+                for(int i=0;i<datas.size();i++){
+                    GoodsBean goodsBean=datas.get(i);
+                    goodsBean.setSelected(isCheck);
+                    notifyItemChanged(i);
+
+                }
+            }
+    }
+
+public void checkAll() {
                int num=0;
           if(datas!=null&&datas.size()>0){
               for(int i=0;i<datas.size();i++){
@@ -149,6 +161,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter< ShoppingCartAdapt
                     if(!goodsBean.isSelected()){
                         //非全选
                           checkboxAll.setChecked(false);
+                            cbAll.setChecked(false);
                     }else {
                         //全选
                           num++;
@@ -156,7 +169,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter< ShoppingCartAdapt
               }
                     if(num==datas.size()){
                         checkboxAll.setChecked(true);
+                        cbAll.setChecked(false);
                     }
+              }  else {
+
+              checkboxAll.setChecked(false);
+              cbAll.setChecked(false);
           }
 
     }
