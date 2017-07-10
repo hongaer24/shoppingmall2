@@ -38,6 +38,8 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     private TextView tvEmptyCartTobuy;
     private LinearLayout ll_empty_shopcart;
     private ShoppingCartAdapter adapter;
+    private static final int ACTION_EDIT = 1;
+    private static final int ACTION_COMPLETE = 2;
 
     public void onClick(View v) {
         if ( v == btnCheckOut ) {
@@ -68,10 +70,65 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         btnCheckOut.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnCollection.setOnClickListener(this);
+        initListener();
+
+
         return view;
         }
 
+    private void initListener() {
+        tvShopcartEdit.setTag(ACTION_EDIT);
+        tvShopcartEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 //1.得到状态
+                  int action= (int) v.getTag();
+                 //2.根据不同状态来处理
+                if(action==ACTION_EDIT){
+                    //切换为完成状态
+                    showDelete();
+                }else {
+                    //切换成编辑状态
+                    hideDelete();
+                }
 
+            }
+        });
+    }
+
+    private void hideDelete() {
+        //1.设置状态和文本
+        tvShopcartEdit.setTag(ACTION_EDIT);
+        tvShopcartEdit.setText("编辑");
+        //2.变成非勾选状态
+        if(adapter!=null){
+            adapter.checkAll_no(true);
+            adapter.checkAll();
+        }
+        //3删除视图显示
+        llDelete.setVisibility(View.GONE);
+        //4结算视图隐藏
+        llCheckAll.setVisibility(View.VISIBLE);
+
+
+    }
+
+    private void showDelete() {
+          //1.设置状态和文本
+         tvShopcartEdit.setTag(ACTION_COMPLETE);
+         tvShopcartEdit.setText("完成");
+          //2.变成非勾选状态
+          if(adapter!=null){
+              adapter.checkAll_no(false);
+              adapter.checkAll();
+          }
+          //3删除视图显示
+        llDelete.setVisibility(View.VISIBLE);
+          //4结算视图隐藏
+        llCheckAll.setVisibility(View.GONE);
+
+
+    }
 
 
     public void initData() {
@@ -88,7 +145,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
           if(goodsBeanList!=null&&goodsBeanList.size()>0){
                //有数据隐藏
                ll_empty_shopcart.setVisibility(View.GONE);
-                adapter=new ShoppingCartAdapter(mContext,goodsBeanList,tvShopcartTotal, checkboxAll);
+                adapter=new ShoppingCartAdapter(mContext,goodsBeanList,tvShopcartTotal, checkboxAll, cbAll);
                 recyclerview.setAdapter(adapter);
                  recyclerview.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
 
