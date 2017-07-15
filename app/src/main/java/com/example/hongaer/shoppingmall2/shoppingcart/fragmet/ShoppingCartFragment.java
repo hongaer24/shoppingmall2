@@ -1,5 +1,6 @@
 package com.example.hongaer.shoppingmall2.shoppingcart.fragmet;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.hongaer.shoppingmall2.R;
+import com.example.hongaer.shoppingmall2.app.MainActivity;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
 import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
 import com.example.hongaer.shoppingmall2.shoppingcart.adapter.ShoppingCartAdapter;
@@ -41,15 +43,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     private static final int ACTION_EDIT = 1;
     private static final int ACTION_COMPLETE = 2;
 
-    public void onClick(View v) {
-        if ( v == btnCheckOut ) {
-            // Handle clicks for btnCheckOut
-        } else if ( v == btnDelete ) {
-            // Handle clicks for btnDelete
-        } else if ( v == btnCollection ) {
-            // Handle clicks for btnCollection
-        }
-    }
+
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.fragment_shopping_cart, null);
@@ -70,11 +64,31 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         btnCheckOut.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnCollection.setOnClickListener(this);
+        tvEmptyCartTobuy.setOnClickListener(this);
         initListener();
 
 
         return view;
         }
+    public void onClick(View v) {
+        if ( v == btnCheckOut ) {
+            // Handle clicks for btnCheckOut
+        } else if ( v == btnDelete ) {
+            adapter.deleteData();
+            adapter.checkAll();
+            if(adapter.getItemCount()==0){
+                emptyShoppingCart();
+            }
+            // Handle clicks for btnDelete
+        } else if ( v == btnCollection ) {
+            // Handle clicks for btnCollection
+        }else  if(v==tvEmptyCartTobuy){
+            Intent intent=new Intent(mContext, MainActivity.class);
+            intent.putExtra("checkid",R.id.rb_home);
+            startActivity(intent);
+
+        }
+    }
 
     private void initListener() {
         tvShopcartEdit.setTag(ACTION_EDIT);
@@ -104,13 +118,12 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         if(adapter!=null){
             adapter.checkAll_no(true);
             adapter.checkAll();
+            adapter.showTotalPrice();
         }
-        //3删除视图显示
+        //3删除视图隐藏
         llDelete.setVisibility(View.GONE);
-        //4结算视图隐藏
+        //4结算视图显示
         llCheckAll.setVisibility(View.VISIBLE);
-
-
     }
 
     private void showDelete() {
@@ -133,25 +146,56 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     public void initData() {
         super.initData();
+        List<GoodsBean> goodsBeanList= CartStorage.getInstance().getAllData();
+       tvShopcartEdit.setVisibility(View.VISIBLE);
+        Log.i("78787878","主页数据被初始化了==="+goodsBeanList);
+        if(goodsBeanList!=null&&goodsBeanList.size()>0){
+            //有数据隐藏
+            llCheckAll.setVisibility(View.GONE);
+            ll_empty_shopcart.setVisibility(View.GONE);
+            adapter = new ShoppingCartAdapter(mContext, goodsBeanList, tvShopcartTotal, checkboxAll, cbAll);
+            recyclerview.setAdapter(adapter);
+            recyclerview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+
+        }else {
+            // 没数据显示
+            emptyShoppingCart();
+
+        }
         Log.e("tag","主页数据被初始化了");
        // textView.setText("购物车");
 
-        showData();
-
     }
 
-    private void showData() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+        hideDelete();
+    }
+
+    /*private void showData() {
         List<GoodsBean> goodsBeanList= CartStorage.getInstance().getAllData();
+        tvShopcartEdit.setVisibility(View.VISIBLE);
+        Log.i("78787878","主页数据被初始化了==="+goodsBeanList);
           if(goodsBeanList!=null&&goodsBeanList.size()>0){
                //有数据隐藏
-               ll_empty_shopcart.setVisibility(View.GONE);
-                adapter=new ShoppingCartAdapter(mContext,goodsBeanList,tvShopcartTotal, checkboxAll, cbAll);
-                recyclerview.setAdapter(adapter);
-                 recyclerview.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+              llCheckAll.setVisibility(View.VISIBLE);
+              ll_empty_shopcart.setVisibility(View.GONE);
+              adapter = new ShoppingCartAdapter(mContext, goodsBeanList, tvShopcartTotal, checkboxAll, cbAll);
+              recyclerview.setAdapter(adapter);
+              recyclerview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
           }else {
               // 没数据显示
-              ll_empty_shopcart.setVisibility(View.VISIBLE);
+              emptyShoppingCart();
+
           }
+    }
+*/
+    private void emptyShoppingCart() {
+        ll_empty_shopcart.setVisibility(View.VISIBLE);
+        tvShopcartEdit.setVisibility(View.GONE);
+        llDelete.setVisibility(View.GONE);
     }
 }
