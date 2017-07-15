@@ -43,7 +43,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter< ShoppingCartAdapt
        checkAll();
     }
 
-    private void showTotalPrice() {
+    public void showTotalPrice() {
          tvShopcartTotal.setText("合计"+getTotalPrice());
     }
 
@@ -182,6 +182,28 @@ public void checkAll() {
     @Override
     public int getItemCount() {
         return datas.size();
+    }
+
+    public void deleteData() {
+           if(datas!=null&&datas.size()>0){
+               for(int i=0;i<datas.size();i++){
+                    //删除选中的
+                    GoodsBean goodsBean=datas.get(i);
+                   if(goodsBean.isSelected()){
+                      //内存中删除
+                      datas.remove(goodsBean);
+                       //在本地中保存
+                       CartStorage.getInstance().deleteData(goodsBean);
+                     //刷新
+                       notifyItemRemoved(i);
+
+                       i--;
+
+                   }
+
+               }
+           }
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
