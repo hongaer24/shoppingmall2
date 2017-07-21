@@ -98,6 +98,7 @@ public class CartStorage {
       sparseArray.put(Integer.parseInt( goodsBean.getProduct_id()), goodsBean);
        saveLocal();
     }
+
     private void saveLocal() {
         //把 parseArray 转换成 list
         List<GoodsBean> goodsBeanList = sparsesToList();

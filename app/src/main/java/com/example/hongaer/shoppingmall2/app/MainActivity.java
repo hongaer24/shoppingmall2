@@ -1,6 +1,7 @@
 package com.example.hongaer.shoppingmall2.app;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +13,7 @@ import android.widget.RadioGroup;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
 import com.example.hongaer.shoppingmall2.community.fragment.CommunityFragment;
-import com.example.hongaer.shoppingmall2.home.fragmet.HomeFragment;
+import com.example.hongaer.shoppingmall2.home.fragment.HomeFragment;
 import com.example.hongaer.shoppingmall2.shoppingcart.fragmet.ShoppingCartFragment;
 import com.example.hongaer.shoppingmall2.type.fragmet.TypeFragment;
 import com.example.hongaer.shoppingmall2.user.fragmet.UserFragment;
@@ -119,6 +120,21 @@ public class MainActivity extends FragmentActivity {
                     transaction.show(nextFragment).commit();
                 }
             }
+        }
+    }
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        //得到id
+        int  checkId = intent.getIntExtra("checkid",R.id.rb_home);
+        switch (checkId){
+            case R.id.rb_home:
+                //切换到主页面
+                rgMain.check(R.id.rb_home);
+                break;
+            case R.id.rb_cart:
+                //切换到购物车
+                rgMain.check(R.id.rb_cart);
+                break;
         }
     }
 

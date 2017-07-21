@@ -1,8 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+
+
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+
+    }
     defaultConfig {
         applicationId "com.example.hongaer.shoppingmall2"
         minSdkVersion 15
@@ -11,6 +18,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -20,13 +28,29 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile files('libs/glide-3.7.0.jar')
+    compile project(':gradationscroll')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
     compile 'com.jakewharton:butterknife:8.6.0'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.zhy:okhttputils:2.6.2'
+    compile 'com.alibaba:fastjson:1.1.59.android'
+    compile 'com.youth.banner:banner:1.3.2'
+    compile 'com.zhy:magic-viewpager:1.0.1'
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    compile 'com.android.support:percent:23.3.0'
+    testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    compile files('src/main/java/libs/mta-sdk-1.6.2.jar')
+    compile files('src/main/java/libs/open_sdk_r5793_lite.jar')
+    compile files('libs/alipaySdk-20160809.jar')
 }
+
+
+

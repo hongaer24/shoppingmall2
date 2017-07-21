@@ -122,8 +122,8 @@ public class ResultDataBean {
                 return end_time;
             }
 
-            public void setEnd_time(String end_time) {
-                this.end_time = end_time;
+                public void setEnd_time(String end_time) {
+                    this.end_time = end_time;
             }
 
             public String getStart_time() {
