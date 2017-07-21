@@ -268,7 +268,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             }
         };
     };
-    /**
+    /*
      * call alipay sdk pay. 调用SDK支付
      *
      */
